@@ -6,14 +6,16 @@
 #include <sys/param.h>
 #include <mach-o/loader.h>
 #include <sys/utsname.h>
-#import "APFSHelper.h"
+#import "libjb.h"
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <getopt.h>
 #import <sys/utsname.h>
 
-#define OPTION_FLAGS "d:lrh"
+#define DLog(format, ...) CFShow((__bridge CFStringRef)[NSString stringWithFormat:format, ## __VA_ARGS__]);
+
+#define OPTION_FLAGS "d:lrhp"
 
 char *progname;
 char *path;
@@ -23,6 +25,7 @@ static struct option longopts[] = {
     { "delete",                    required_argument,      NULL,   'd' },
     { "help",                      no_argument,            NULL,   'h' },
     { "refresh",                   no_argument,            NULL,   'r' },
+    { "prefix",                    no_argument,            NULL,   'p' },
     { NULL,                        0,                      NULL,    0  }
 };
 
@@ -30,11 +33,11 @@ void cmd_help(void){
     printf("Usage: APFSUtil [OPTIONS] Volume\n");
     printf("List & delete apfs volumes and refresh the prefix conf file\n\n");
     
-    printf("  -h, --help\t\t\tprints usage information\n");
-    printf("  -d, --delete\t\t\tthe volume to delete\n");
-    printf("  -l, --list\t\t\tlists all the APFS volumes on the device\n");
+    printf("  -h, --help\t\tprints usage information\n");
+    printf("  -d, --delete\t\tthe volume to delete\n");
+    printf("  -l, --list\t\tlists all the APFS volumes on the device\n");
     printf("  -r, --refresh\t\trefresh the prefix conf file\n");
-    
+    printf("  -p, --prefix\t\tprint out the current prefix\n");
     printf("\n");
 }
 
@@ -50,13 +53,16 @@ int main(int argc, char **argv) {
                     cmd_help();
                     return 0;
                 case 'l':
-                    [APFSHelper listVolumes];
+                    DLog(@"%@", [JBManager deviceArray]);
                     return 0;
                 case 'd':
                     volume = [NSString stringWithUTF8String:optarg];
-                    return [APFSHelper deleteVolume:volume];
+                    return [JBManager deleteVolume:volume];
                 case 'r':
-                    return [APFSHelper refreshPrefix];
+                    return [JBManager refreshPrefix];
+                case 'p':
+                    DLog(@"%@", [JBManager jbPrefix]);
+                    return 0;
                 default:
                     cmd_help();
                     return -1;
