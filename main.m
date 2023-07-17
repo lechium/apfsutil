@@ -26,15 +26,15 @@ BOOL queryUserWithString(NSString *query) {
         c=getchar();
     }
     if (c == 'n') {
-        return FALSE;
+        return false;
     } else if (c == 'y') {
-        return TRUE;
+        return true;
     }
-    return FALSE;
+    return false;
 }
 
 int main(int argc, char *argv[], char *envp[]) {
-	@autoreleasepool {
+    @autoreleasepool {
         DLog(@"");
         if (argc < 2) {
             DLog(@"You must choose an APFS volume to delete, listing APFS volumes instead.");
@@ -54,7 +54,6 @@ int main(int argc, char *argv[], char *envp[]) {
             } else {
                 DLog(@"\nBailed\n\n");
             }
-            
         }
-	}
+    }
 }

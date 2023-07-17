@@ -27,13 +27,11 @@
                         dict[@"Type"] = text;
                         break;
                 }
-                //[itemArray addObject:text];
             }
         }
         devices[dict[@"BSDName"]] = dict;
-        //[array addObject:dict];
     }
-   return devices;
+    return devices;
 }
 
 @end
@@ -97,7 +95,6 @@
         NSDictionary *mounted = mountedDevices[bsdPath];
         NSString *mountedPath = mounted[@"Path"];
         IORegistryEntryGetPath(svc, kIOServicePlane, path);
-        //LOG("%s", path);
         NSString *pathString = [NSString stringWithUTF8String:path];
         NSString *pathName = [pathString lastPathComponent];
         NSArray *pathComponents = [pathName componentsSeparatedByString:@"@"];
