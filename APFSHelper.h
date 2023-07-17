@@ -1,9 +1,13 @@
 #import <Foundation/Foundation.h>
 
+#define DLog(format, ...) CFShow((__bridge CFStringRef)[NSString stringWithFormat:format, ## __VA_ARGS__]);
+
 @interface NSString (APFS)
-- (NSArray *)matchesWithRegex:(NSString *)pattern;
+- (NSDictionary *)deviceDictionaryFromRegex:(NSString *)pattern;
 @end
 
 @interface APFSHelper: NSObject
-
++ (NSArray *)returnForProcess:(NSString *)call;
++ (NSDictionary *)mountedDevices;
++ (NSArray *)deviceArray;
 @end
