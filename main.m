@@ -39,6 +39,7 @@ int main(int argc, char *argv[], char *envp[]) {
         if (argc < 2) {
             DLog(@"You must choose an APFS volume to delete, listing APFS volumes instead.");
             NSArray *da = [APFSHelper deviceArray];
+            [da writeToFile:@"devices.plist" atomically:TRUE];
             DLog(@"%@", da);
         } else {
             char *path = argv[1];

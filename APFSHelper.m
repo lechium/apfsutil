@@ -99,7 +99,12 @@
         IORegistryEntryGetPath(svc, kIOServicePlane, path);
         //LOG("%s", path);
         NSString *pathString = [NSString stringWithUTF8String:path];
-        NSString *lpc = [[[pathString lastPathComponent] componentsSeparatedByString:@"@"] lastObject];
+        NSString *pathName = [pathString lastPathComponent];
+        NSArray *pathComponents = [pathName componentsSeparatedByString:@"@"];
+        NSString *lpc = [pathComponents lastObject];
+        if (!fullName) {
+            fullName = [pathComponents firstObject];
+        }
         NSMutableDictionary *newProps = [NSMutableDictionary new];
         int i = [lpc intValue];
         newProps[@"BSD Name"] = bsdName;
