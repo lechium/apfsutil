@@ -18,8 +18,6 @@
 char *progname;
 char *path;
 
-
-
 static struct option longopts[] = {
     { "list",                      no_argument,            NULL,   'l' },
     { "delete",                    required_argument,      NULL,   'd' },
@@ -68,28 +66,4 @@ int main(int argc, char **argv) {
     }
     return 0;
 }
-/*
- int main(int argc, char *argv[], char *envp[]) {
- @autoreleasepool {
- DLog(@"");
- if (argc < 2) {
- DLog(@"You must choose an APFS volume to delete, listing APFS volumes instead.");
- NSArray *da = [APFSHelper deviceArray];
- DLog(@"%@", da);
- } else {
- char *path = argv[1];
- DLog(@"Attempting to delete volume: %s", path);
- if (queryUserWithString(@"Are you sure?")) {
- int deleteProgress = APFSVolumeDelete(path);
- DLog(@"\nVolume deleted with return status: %d", deleteProgress);
- if (deleteProgress == 49874) {
- DLog(@"\nThe volume is currently busy, try unmounting first!\n\n");
- }
- return deleteProgress;
- } else {
- DLog(@"\nBailed\n\n");
- }
- }
- }
- }
- */
+
