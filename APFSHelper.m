@@ -2,6 +2,8 @@
 #include <sys/stat.h>
 #import "iokit.h"
 
+int APFSVolumeDelete(const char *path);
+
 @implementation NSString (APFS)
 - (NSDictionary *)deviceDictionaryFromRegex:(NSString *)pattern  {
     NSMutableDictionary *devices = [NSMutableDictionary new];
@@ -37,6 +39,53 @@
 @end
 
 @implementation APFSHelper
+
++ (int)deleteVolume:(NSString *)volume {
+    if ([self queryUserWithString:@"Are you sure you want to delete this volume? This cannot be undone and all data will be lost!"]) {
+        APFSErrorCode deleteProgress = APFSVolumeDelete([volume UTF8String]);
+        //DLog(@"\nVolume deleted with return status: %d", deleteProgress);
+        switch (deleteProgress) {
+            case APFSErrorCodeInvalidVolume:
+                DLog(@"\n%@ doesn't exist.\n\n", volume);
+                break;
+            case APFSErrorCodeVolumeBusy:
+                DLog(@"\nThe volume is currently busy, try unmounting first!\n\n");
+                break;
+            case APFSErrorCodeBadEntitlements:
+                DLog(@"\n\nMissing entitlements to delete APFS volumes\n\n");
+                break;
+            default:
+                DLog(@"\n\nAn unknown error has occured, error code: %ld\n\n", (long)deleteProgress);
+                break;
+        }
+        return deleteProgress;
+    }
+    return -1;
+}
+
++ (void)listVolumes {
+    NSArray *deviceArray = [self deviceArray];
+    DLog(@"%@", deviceArray);
+}
+
++ (BOOL)queryUserWithString:(NSString *)query {
+    NSString *errorString = [NSString stringWithFormat:@"\n%@ [y/n]? ", query];
+    char c;
+    printf("%s", [errorString UTF8String] );
+    c=getchar();
+    while(c!='y' && c!='n') {
+        if (c!='\n'){
+            printf("[y/n]");
+        }
+        c=getchar();
+    }
+    if (c == 'n') {
+        return false;
+    } else if (c == 'y') {
+        return true;
+    }
+    return false;
+}
 
 + (NSArray *)returnForProcess:(NSString *)call {
     if (call==nil)
@@ -122,6 +171,22 @@
     IOObjectRelease(matchingServices);
     mach_port_deallocate(mach_task_self(), masterPort);
     return deviceArray;
+}
+
++ (int)refreshPrefix {
+    NSString *prefixPath = [self prefixPath];
+    if (prefixPath) {
+        DLog(@"Found prefix path: %@", prefixPath);
+        return [prefixPath writeToFile:@"/etc/cr_prefix" atomically:true encoding:NSUTF8StringEncoding error:nil];
+    }
+    return -1;
+}
+
++ (NSString *)prefixPath {
+    NSArray *deviceArray = [self deviceArray];
+    NSDictionary *checkra1n = [[deviceArray filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"FullName == 'checkra1n'"]] lastObject];
+    //DLog(@"checkra1n: %@", checkra1n);
+    return checkra1n[@"MountPath"];
 }
 
 @end
