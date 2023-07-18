@@ -1,8 +1,9 @@
-Package: com.nito.apfsutil
+Package: apfsutil
 Name: APFSUtil
-Version: 0.0.1
+Depends: libjb
+Version: 1.0
 Architecture: appletvos-arm64
-Description: An awesome tool of some sort!!
+Description: A tool to list and delete APFS volumes and to list and refresh the rootless prefix path if applicable.
 Maintainer: Kevin Bradley
 Author: Kevin Bradley
 Section: System

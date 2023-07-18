@@ -1,4 +1,5 @@
 export GO_EASY_ON_ME=1
+DEBUG=0
 TARGET := appletv:clang:latest:9.0
 
 include $(THEOS)/makefiles/common.mk
